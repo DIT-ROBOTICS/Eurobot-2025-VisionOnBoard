@@ -13,7 +13,7 @@ services:
             context: .
             target: realsense  
             args:
-                USER: realsense
+                USER: onboard
                 LIBREALSENSE_VERSION: $LIBREALSENSE_VERSION
                 REALSENSE_ROS_VERSION: $REALSENSE_ROS_VERSION
         <<: *common-vars
@@ -21,40 +21,39 @@ services:
         container_name: onboard-realsense
         privileged: true
         volumes:
-        - /dev:/dev
-        - $LOCAL_WORKSPACE_FOLDER/dds-uri/cycloneDDS.xml:/tmp/cycloneDDS.xml
-        - $LOCAL_WORKSPACE_FOLDER/packages/realsense-pkg:/home/realsense/vision-ws/src/realsense-ros
-        - $LOCAL_WORKSPACE_FOLDER/packages/camera-pkg:/home/realsense/vision-ws/src/camera-ros
+            - /dev:/dev
+            - $LOCAL_WORKSPACE_FOLDER/config/dds-uri/cycloneDDS.xml:/tmp/cycloneDDS.xml
+            - $LOCAL_WORKSPACE_FOLDER/packages/realsense-pkg:/home/onboard/vision-ws/src/realsense-ros
         device_cgroup_rules:
-        - "c 81:* rmw"
-        - "c 189:* rmw"
+            - "c 81:* rmw"
+            - "c 189:* rmw"
         command: bash
         profiles: ['camera']
 
     avoidance:
         build:
             context: .
-            target: aruco 
+            target: avoidance 
             args:
-                USER: groundtruth
+                USER: avoidance
         <<: *common-vars
-        image: vision-main:groundtruth
-        container_name: groundtruth
+        image: vision-main:avoidance
+        container_name: avoidance
         volumes:
-            - $PWD/../groundtruth-pkg:/home/groundtruth/vision-ws/src/aruco-ros
+            - $LOCAL_WORKSPACE_FOLDER/packages/avoidance-pkg:/home/avoidance/vision-ws/src/avoidance-ros
         command: bash 
         profiles: ['avoid']
 
     feedback:
         build:
             context: .
-            target: aruco 
+            target: feedback 
             args:
-                USER: groundtruth
+                USER: feedback
         <<: *common-vars
-        image: vision-main:groundtruth
-        container_name: groundtruth
+        image: vision-main:feedback
+        container_name: feedback
         volumes:
-            - $PWD/../groundtruth-pkg:/home/groundtruth/vision-ws/src/aruco-ros
+            - $LOCAL_WORKSPACE_FOLDER/packages/feedback-pkg:/home/feedback/vision-ws/src/feedback-ros
         command: bash
         profiles: ['feedback']
