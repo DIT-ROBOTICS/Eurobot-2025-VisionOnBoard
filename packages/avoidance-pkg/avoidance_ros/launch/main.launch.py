@@ -4,7 +4,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
     return LaunchDescription([
         Node(
-            package='pointcloud_ros',
+            package='avoidance_ros',
             executable='main',
             name='point_cloud_filter',
             output='screen',
@@ -16,7 +16,7 @@ def generate_launch_description():
                 'z_low': 0.0,
                 'z_high': 1.0,
                 'leaf_size': 0.01,
-                'min_z': 100
+                'min_z': 100.0,
             }]
         )
     ])

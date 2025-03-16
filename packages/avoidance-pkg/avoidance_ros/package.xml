@@ -4,7 +4,7 @@
   <name>avoidance_ros</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="fujiade0518@gmail.com">aruco</maintainer>
+  <maintainer email="fujiade0518@gmail.com">avoidance</maintainer>
   <license>Apache-2.0</license>
 
   <!-- Build -->
