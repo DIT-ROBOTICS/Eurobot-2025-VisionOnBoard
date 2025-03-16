@@ -21,9 +21,9 @@ from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.substitutions import LaunchConfiguration
 
 
-configurable_parameters = [{'name': 'camera_name',                  'default': '', 'description': 'camera unique name'},
-                           {'name': 'camera_namespace',             'default': '', 'description': 'namespace for camera'},
-                           {'name': 'serial_no',                    'default': "", 'description': 'choose device by serial number'},
+configurable_parameters = [{'name': 'camera_name',                  'default': 'd405', 'description': 'camera unique name'},
+                           {'name': 'camera_namespace',             'default': 'realsense', 'description': 'namespace for camera'},
+                           {'name': 'serial_no',                    'default': "_419122270813", 'description': 'choose device by serial number'},
                            {'name': 'usb_port_id',                  'default': "''", 'description': 'choose device by usb port id'},
                            {'name': 'device_type',                  'default': "''", 'description': 'choose device by type'},
                            {'name': 'config_file',                  'default': "''", 'description': 'yaml config file'},
@@ -74,7 +74,7 @@ configurable_parameters = [{'name': 'camera_name',                  'default': '
                            {'name': 'publish_tf',                   'default': 'true', 'description': '[bool] enable/disable publishing static & dynamic TF'},
                            {'name': 'tf_publish_rate',              'default': '1.0', 'description': '[double] rate in Hz for publishing dynamic TF'},
                            # Pointcloud
-                           {'name': 'pointcloud.enable',            'default': 'false', 'description': ''},
+                           {'name': 'pointcloud.enable',            'default': 'true', 'description': ''},
                            {'name': 'pointcloud.stream_filter',     'default': '2', 'description': 'texture stream for pointcloud'},
                            {'name': 'pointcloud.stream_index_filter','default': '0', 'description': 'texture stream index for pointcloud'},
                            {'name': 'pointcloud.ordered_pc',        'default': 'false', 'description': ''},
