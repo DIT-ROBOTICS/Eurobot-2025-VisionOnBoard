@@ -12,6 +12,9 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
     sensor_msgs
     PCL
     pcl_conversions
+    tf2
+    tf2_ros
+    tf2_sensor_msgs
 )
 find_package(ament_cmake REQUIRED)
 foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
@@ -29,6 +32,12 @@ add_executable(main
     src/main.cpp
     src/voxelgrid-cube.cpp
 )
+add_executable(transform
+    src/Transform.cpp
+)
+add_executable(tf_broadcaster
+  src/tf_broadcaster.cpp
+)
 
 # link the executable with the libraries
 ament_target_dependencies(
@@ -40,9 +49,26 @@ ament_target_dependencies(
   pcl_conversions
 )
 target_link_directories(main PUBLIC ${PCL_LIBRARY_DIRS})
+ament_target_dependencies(
+  transform
+  std_msgs
+  rclcpp
+  tf2
+  tf2_ros
+  tf2_sensor_msgs
+)
+ament_target_dependencies(
+  tf_broadcaster
+  rclcpp
+  geometry_msgs
+  tf2
+  tf2_ros
+)
 
 install(TARGETS
   main
+  transform
+  tf_broadcaster
   DESTINATION lib/${PROJECT_NAME}
 )
 

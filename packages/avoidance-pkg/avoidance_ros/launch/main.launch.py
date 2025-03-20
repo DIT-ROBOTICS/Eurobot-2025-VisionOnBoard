@@ -19,4 +19,11 @@ def generate_launch_description():
                 'min_z': 100.0,
             }]
         )
+
+        Node(
+            package='avoidance_ros',
+            executable='Transform',
+            name='pointcloud_transformer',
+            output='screen'
+        )
     ])

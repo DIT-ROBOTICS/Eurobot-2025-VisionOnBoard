@@ -1,10 +1,4 @@
 #include "voxelgrid-cube.h"
-#include <rclcpp/rclcpp.hpp>
-#include <std_msgs/msg/bool.hpp>
-#include <sensor_msgs/msg/point_cloud2.hpp>
-#include <pcl_conversions/pcl_conversions.h>
-#include <pcl/filters/passthrough.h>
-#include <pcl/filters/voxel_grid.h>
 
 extern double x_low, x_high, y_low, y_high, z_low, z_high, leaf_size, min_z;
 
@@ -33,6 +27,7 @@ void Cube::filterPointCloud(const sensor_msgs::msg::PointCloud2::SharedPtr& clou
     pass.setFilterLimits(z_low, z_high);
     pass.filter(*cloud_filtered);
 
+    // Voxel Grid
     pcl::VoxelGrid<pcl::PointXYZRGB> vg;
     vg.setInputCloud(cloud_filtered);
     vg.setLeafSize(leaf_size, leaf_size, leaf_size);

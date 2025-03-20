@@ -38,7 +38,7 @@ public:
         pub_pointcloud_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/realsense/d405/output", 10);
 
         sub_bool_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-            "/realsense/d405/output", 10, std::bind(&PointCloudFilter::StopRobot, this, std::placeholders::_1));
+            "/realsense/d405/transformed_output", 10, std::bind(&PointCloudFilter::StopRobot, this, std::placeholders::_1));
         pub_bool_ = this->create_publisher<std_msgs::msg::Bool>("/stopRobot", 10);
     }
 
