@@ -23,22 +23,22 @@ public:
         this->declare_parameter<double>("min_z", 100);
 
         // Get parameters
-        cube_instance.x_low = this->get_parameter("x_low").as_double();
-        cube_instance.x_high = this->get_parameter("x_high").as_double();
-        cube_instance.y_low = this->get_parameter("y_low").as_double();
-        cube_instance.y_high = this->get_parameter("y_high").as_double();
-        cube_instance.z_low = this->get_parameter("z_low").as_double();
-        cube_instance.z_high = this->get_parameter("z_high").as_double();
+        cube_instance.x_low     = this->get_parameter("x_low").as_double();
+        cube_instance.x_high    = this->get_parameter("x_high").as_double();
+        cube_instance.y_low     = this->get_parameter("y_low").as_double();
+        cube_instance.y_high    = this->get_parameter("y_high").as_double();
+        cube_instance.z_low     = this->get_parameter("z_low").as_double();
+        cube_instance.z_high    = this->get_parameter("z_high").as_double();
         cube_instance.leaf_size = this->get_parameter("leaf_size").as_double();
-        cube_instance.min_z = this->get_parameter("min_z").as_double();
+        cube_instance.min_z     = this->get_parameter("min_z").as_double();
         
         // Subscribe and publish
         sub_pointcloud = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-            "/realsense/d405/depth/color/points", 10, std::bind(&PointCloudFilter::cloudCallback, this, std::placeholders::_1));
+            "/realsense/d405/transformed_output", 10, std::bind(&PointCloudFilter::cloudCallback, this, std::placeholders::_1));
         pub_pointcloud_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/realsense/d405/output", 10);
 
         sub_bool_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-            "/realsense/d405/transformed_output", 10, std::bind(&PointCloudFilter::StopRobot, this, std::placeholders::_1));
+            "/realsense/d405/output", 10, std::bind(&PointCloudFilter::StopRobot, this, std::placeholders::_1));
         pub_bool_ = this->create_publisher<std_msgs::msg::Bool>("/stopRobot", 10);
     }
 

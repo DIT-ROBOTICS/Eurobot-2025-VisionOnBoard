@@ -12,7 +12,7 @@ public:
                               tf_listener_(tf_buffer_)
     {
         sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-            "/realsense/d405/output", 10,
+            "/realsense/d405/depth/color/points", 10,
             std::bind(&PointCloudTransformer::cloud_callback, this, std::placeholders::_1));
         pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/realsense/d405/transformed_output", 10);
     }
@@ -20,7 +20,7 @@ public:
 private:
     void cloud_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
     {
-        std::string target_frame = "base_link"; // Transform to desired target frame
+        std::string target_frame = "d405_tf_frame"; // Transform to desired target frame
         try
         {
             // Get the transformation
