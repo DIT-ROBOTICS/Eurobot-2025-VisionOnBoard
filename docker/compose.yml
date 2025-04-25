@@ -64,6 +64,11 @@ services:
         image: vision-main:feedback
         container_name: feedback
         volumes:
-            - $LOCAL_WORKSPACE_FOLDER/packages/feedback-pkg:/home/feedback/vision-ws/src/feedback-ros
-        command: bash
+            - $LOCAL_WORKSPACE_FOLDER/packages/feedback-pkg:/home/feedback/vision-ws/src/aruco-ros
+        command: >
+            bash -ic "
+            colcon build --parallel-workers 6;
+            source /home/feedback/vision-ws/install/local_setup.bash;
+            ros2 launch aruco_ros single.launch.py;
+            "
         profiles: ['feedback']
