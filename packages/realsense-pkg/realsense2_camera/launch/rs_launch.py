@@ -19,7 +19,7 @@ from launch import LaunchDescription
 import launch_ros.actions
 from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.substitutions import LaunchConfiguration
-
+from launch import LaunchContext
 
 configurable_parameters = [{'name': 'camera_name',                  'default': 'd405', 'description': 'camera unique name'},
                            {'name': 'camera_namespace',             'default': 'realsense', 'description': 'namespace for camera'},
@@ -35,12 +35,12 @@ configurable_parameters = [{'name': 'camera_name',                  'default': '
                            {'name': 'output',                       'default': 'log', 'description': 'pipe node output [screen|log]'},
                            # Color
                            {'name': 'enable_color',                 'default': 'true', 'description': 'enable color stream'},
-                           {'name': 'rgb_camera.color_profile',     'default': '640,360,30', 'description': 'color stream profile'},
+                           {'name': 'rgb_camera.color_profile',     'default': '640,360,90', 'description': 'color stream profile'},
                            {'name': 'rgb_camera.color_format',      'default': 'BGR8', 'description': 'color stream format'},
                            {'name': 'rgb_camera.enable_auto_exposure', 'default': 'true', 'description': 'enable/disable auto exposure for color image'},
                            # Depth
                            {'name': 'enable_depth',                 'default': 'true', 'description': 'enable depth stream'},
-                           {'name': 'depth_module.depth_profile',   'default': '640,360,30', 'description': 'depth stream profile'},
+                           {'name': 'depth_module.depth_profile',   'default': '640,360,90', 'description': 'depth stream profile'},
                            {'name': 'depth_module.depth_format',    'default': 'Z16', 'description': 'depth stream format'},
                            {'name': 'depth_module.exposure',        'default': '8500', 'description': 'Depth module manual exposure value'},
                            {'name': 'depth_module.gain',            'default': '16', 'description': 'Depth module manual gain value'},
@@ -126,7 +126,22 @@ def launch_setup(context, params, param_name_suffix=''):
             )
     ]
 
+def launch_base_footprint_transform_publisher_node(context: LaunchContext):
+    node = launch_ros.actions.Node(
+        name='cam2base_transform_publisher',
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        arguments=[
+            '0.0905', '0.0', '0.303', '0', '0.3496', '-1.5707963268',
+            'base_footprint',
+            context.launch_configurations['camera_name'] + '_link'
+        ]
+    )
+    return [node]
+
 def generate_launch_description():
     return LaunchDescription(declare_configurable_parameters(configurable_parameters) + [
-        OpaqueFunction(function=launch_setup, kwargs = {'params' : set_configurable_parameters(configurable_parameters)})
-    ])
+        OpaqueFunction(function=launch_setup, kwargs = {'params' : set_configurable_parameters(configurable_parameters)}),
+        OpaqueFunction(function=launch_base_footprint_transform_publisher_node)
+    ]
+    )

@@ -34,7 +34,7 @@ public:
         
         // Subscribe and publish
         sub_pointcloud = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-            "/realsense/d405/transformed_output", 10, std::bind(&PointCloudFilter::cloudCallback, this, std::placeholders::_1));
+            "/realsense/d405/depth/color/points", 10, std::bind(&PointCloudFilter::cloudCallback, this, std::placeholders::_1));
         pub_pointcloud_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/realsense/d405/output", 10);
 
         sub_bool_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
