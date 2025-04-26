@@ -19,7 +19,7 @@ from launch import LaunchDescription
 import launch_ros.actions
 from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.substitutions import LaunchConfiguration
-
+from launch import LaunchContext
 
 configurable_parameters = [{'name': 'camera_name',                  'default': 'd405', 'description': 'camera unique name'},
                            {'name': 'camera_namespace',             'default': 'realsense', 'description': 'namespace for camera'},
@@ -126,7 +126,22 @@ def launch_setup(context, params, param_name_suffix=''):
             )
     ]
 
+def launch_base_footprint_transform_publisher_node(context: LaunchContext):
+    node = launch_ros.actions.Node(
+        name='cam2base_transform_publisher',
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        arguments=[
+            '0.0905', '0.0', '0.303', '0', '0.3496', '-1.5707963268',
+            'base_footprint',
+            context.launch_configurations['camera_name'] + '_link'
+        ]
+    )
+    return [node]
+
 def generate_launch_description():
     return LaunchDescription(declare_configurable_parameters(configurable_parameters) + [
-        OpaqueFunction(function=launch_setup, kwargs = {'params' : set_configurable_parameters(configurable_parameters)})
-    ])
+        OpaqueFunction(function=launch_setup, kwargs = {'params' : set_configurable_parameters(configurable_parameters)}),
+        OpaqueFunction(function=launch_base_footprint_transform_publisher_node)
+    ]
+    )
