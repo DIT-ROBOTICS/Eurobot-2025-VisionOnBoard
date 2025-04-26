@@ -46,7 +46,12 @@ services:
         container_name: avoidance
         volumes:
             - $LOCAL_WORKSPACE_FOLDER/packages/avoidance-pkg:/home/avoidance/vision-ws/src/avoidance-ros
-        command: bash 
+        command: >
+            bash -ic "
+            colcon build --packages-select avoidance_ros;
+            source /home/avoidance/vision-ws/install/local_setup.bash;
+            ros2 launch avoidance_ros main.launch.py
+            "
         profiles: ['avoid']
 
     feedback:
@@ -59,6 +64,11 @@ services:
         image: vision-main:feedback
         container_name: feedback
         volumes:
-            - $LOCAL_WORKSPACE_FOLDER/packages/feedback-pkg:/home/feedback/vision-ws/src/feedback-ros
-        command: bash
+            - $LOCAL_WORKSPACE_FOLDER/packages/feedback-pkg:/home/feedback/vision-ws/src/aruco-ros
+        command: >
+            bash -ic "
+            colcon build --parallel-workers 6;
+            source /home/feedback/vision-ws/install/local_setup.bash;
+            ros2 launch aruco_ros single.launch.py;
+            "
         profiles: ['feedback']

@@ -16,7 +16,7 @@ def generate_launch_description():
                 'z_low'    : -0.5,
                 'z_high'   : 0.5,
                 'leaf_size': 0.01,
-                'min_z'    : 0.2,
+                'min_z'    : 0.3,
             }]
         ),
 

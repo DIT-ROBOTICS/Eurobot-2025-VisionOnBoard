@@ -40,9 +40,14 @@ bool Cube::StopRobot(const sensor_msgs::msg::PointCloud2::SharedPtr& cloud_msg) 
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
     pcl::fromROSMsg(*cloud_msg, *cloud);
 
+    int counter = 0;
     for(const auto& point : cloud->points) {
         if(point.x < min_z) {
-            return true;
+            counter++;
+            if(counter > 10) {
+                counter = 0;
+                return true;
+            }
         }
     }
     return false;
