@@ -21,8 +21,8 @@ from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.substitutions import LaunchConfiguration
 from launch import LaunchContext
 
-configurable_parameters = [{'name': 'camera_name',                  'default': 'd405', 'description': 'camera unique name'},
-                           {'name': 'camera_namespace',             'default': 'realsense', 'description': 'namespace for camera'},
+configurable_parameters = [{'name': 'camera_name',                  'default': 'onboard', 'description': 'camera unique name'},
+                           {'name': 'camera_namespace',             'default': 'vision', 'description': 'namespace for camera'},
                            {'name': 'serial_no',                    'default': "_419122270813", 'description': 'choose device by serial number'},
                            {'name': 'usb_port_id',                  'default': "''", 'description': 'choose device by usb port id'},
                            {'name': 'device_type',                  'default': "''", 'description': 'choose device by type'},
@@ -35,7 +35,7 @@ configurable_parameters = [{'name': 'camera_name',                  'default': '
                            {'name': 'output',                       'default': 'log', 'description': 'pipe node output [screen|log]'},
                            # Color
                            {'name': 'enable_color',                 'default': 'true', 'description': 'enable color stream'},
-                           {'name': 'rgb_camera.color_profile',     'default': '848,480,90', 'description': 'color stream profile'},
+                           {'name': 'rgb_camera.color_profile',     'default': '640,340,30', 'description': 'color stream profile'},
                            {'name': 'rgb_camera.color_format',      'default': 'BGR8', 'description': 'color stream format'},
                            {'name': 'rgb_camera.enable_auto_exposure', 'default': 'true', 'description': 'enable/disable auto exposure for color image'},
                            # Depth

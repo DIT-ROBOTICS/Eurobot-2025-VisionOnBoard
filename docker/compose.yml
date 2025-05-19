@@ -46,6 +46,7 @@ services:
         container_name: avoidance
         volumes:
             - $LOCAL_WORKSPACE_FOLDER/packages/avoidance-pkg:/home/avoidance/vision-ws/src/avoidance-ros
+        # command: bash 
         command: >
             bash -ic "
             colcon build --packages-select avoidance_ros;

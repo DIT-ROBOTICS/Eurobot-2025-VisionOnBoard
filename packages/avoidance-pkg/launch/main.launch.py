@@ -1,35 +1,26 @@
+import os
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
 def generate_launch_description():
+    pkg_share = get_package_share_directory('avoidance_ros')
+    config_file = os.path.join(pkg_share, 'launch', 'avoidance_config.yml')
+
     return LaunchDescription([
         Node(
             package='avoidance_ros',
             executable='main',
-            name='point_cloud_filter',
+            name='onboard_filter',
+            namespace='vision',
             output='screen',
-            parameters=[{
-                'x_low'    : -0.0,
-                'x_high'   : 0.26,
-                'y_low'    : -0.5,
-                'y_high'   : 0.5,
-                'z_low'    : -0.5,
-                'z_high'   : 0.5,
-                'leaf_size': 0.01,
-                'min_z'    : 0.3,
-            }]
+            parameters=[config_file]
         ),
 
         Node(
-            package='avoidance_ros',
-            executable='transform',
-            name='pointcloud_transformer',
-            output='screen'
-        ),
-        Node(
-            package='avoidance_ros',
-            executable='tf_broadcaster',
-            name='dynamic_tf_broadcaster',
-            output='screen'
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            arguments=['0.0905', '0.0', '0.303', '0', '0.3496', '-1.5707963268',
+                      'base_footprint', 'camera_link']
         )
     ])
