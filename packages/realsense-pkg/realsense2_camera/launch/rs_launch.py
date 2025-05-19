@@ -21,9 +21,9 @@ from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.substitutions import LaunchConfiguration
 from launch import LaunchContext
 
-configurable_parameters = [{'name': 'camera_name',                  'default': 'd405', 'description': 'camera unique name'},
-                           {'name': 'camera_namespace',             'default': 'realsense', 'description': 'namespace for camera'},
-                           {'name': 'serial_no',                    'default': "_419122270813", 'description': 'choose device by serial number'},
+configurable_parameters = [{'name': 'camera_name',                  'default': 'onboard', 'description': 'camera unique name'},
+                           {'name': 'camera_namespace',             'default': 'vision', 'description': 'namespace for camera'},
+                           {'name': 'serial_no',                    'default': "_419122270673", 'description': 'choose device by serial number'},
                            {'name': 'usb_port_id',                  'default': "''", 'description': 'choose device by usb port id'},
                            {'name': 'device_type',                  'default': "''", 'description': 'choose device by type'},
                            {'name': 'config_file',                  'default': "''", 'description': 'yaml config file'},

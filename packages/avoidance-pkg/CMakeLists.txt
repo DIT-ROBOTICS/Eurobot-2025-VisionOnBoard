@@ -10,6 +10,7 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
     rclcpp
     std_msgs
     sensor_msgs
+    geometry_msgs
     PCL
     pcl_conversions
     tf2
@@ -27,48 +28,47 @@ include_directories(
   ${ament_INCLUDE_DIRS}
 )
 
-# source files
-add_executable(main
-    src/main.cpp
-    src/voxelgrid-cube.cpp
-)
-add_executable(transform
-    src/Transform.cpp
-)
-add_executable(tf_broadcaster
-  src/tf_broadcaster.cpp
-)
 
-# link the executable with the libraries
-ament_target_dependencies(
-  main
+# Set dependecies
+set(dependencies
   std_msgs
   rclcpp
   sensor_msgs
+  geometry_msgs
   PCL
   pcl_conversions
-)
-target_link_directories(main PUBLIC ${PCL_LIBRARY_DIRS})
-ament_target_dependencies(
-  transform
-  std_msgs
-  rclcpp
   tf2
   tf2_ros
   tf2_sensor_msgs
 )
-ament_target_dependencies(
-  tf_broadcaster
-  rclcpp
-  geometry_msgs
-  tf2
-  tf2_ros
+
+# main node
+add_executable(main
+  src/main.cpp
+  src/voxelgrid-cube.cpp
 )
+ament_target_dependencies(main ${dependencies})
+target_link_directories(main PUBLIC ${PCL_LIBRARY_DIRS})
+
+# test node
+add_executable(test_vel
+  src/test_vel.cpp
+)
+ament_target_dependencies(test_vel ${dependencies})
+target_link_directories(test_vel PUBLIC ${PCL_LIBRARY_DIRS})
+
+# side node
+# add_executable(camera_side
+#   src/camera_side.cpp
+# )
+# ament_target_dependencies(camera_side ${dependencies})
+# target_link_directories(camera_side PUBLIC ${PCL_LIBRARY_DIRS})
+
 
 install(TARGETS
   main
-  transform
-  tf_broadcaster
+  test_vel
+  # camera_side
   DESTINATION lib/${PROJECT_NAME}
 )
 

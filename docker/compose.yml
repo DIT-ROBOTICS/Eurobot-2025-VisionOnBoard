@@ -31,7 +31,7 @@ services:
             bash -ic "
             colcon build --packages-select realsense2_camera;
             source /home/realsense/vision-ws/install/local_setup.bash;
-            ros2 launch realsense2_camera rs_launch.py
+            ros2 launch realsense2_camera rs_multi_camera_launch.py
             "
         profiles: ['camera']
 

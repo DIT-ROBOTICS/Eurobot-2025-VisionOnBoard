@@ -2,9 +2,9 @@
 
 extern double x_low, x_high, y_low, y_high, z_low, z_high, leaf_size, min_z;
 
-void Cube::filterPointCloud(const sensor_msgs::msg::PointCloud2::SharedPtr& cloud_msg, sensor_msgs::msg::PointCloud2& output) {
+void Cube::filterPointCloud(const sensor_msgs::msg::PointCloud2& cloud_msg, sensor_msgs::msg::PointCloud2& output) {
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
-    pcl::fromROSMsg(*cloud_msg, *cloud);
+    pcl::fromROSMsg(cloud_msg, *cloud);
 
     pcl::PassThrough<pcl::PointXYZRGB> pass;
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_filtered(new pcl::PointCloud<pcl::PointXYZRGB>());
@@ -36,7 +36,7 @@ void Cube::filterPointCloud(const sensor_msgs::msg::PointCloud2::SharedPtr& clou
     pcl::toROSMsg(*cloud_filtered, output);
 }
 
-bool Cube::StopRobot(const sensor_msgs::msg::PointCloud2::SharedPtr& cloud_msg) {
+bool Cube::stopRobot(const sensor_msgs::msg::PointCloud2::SharedPtr& cloud_msg) {
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
     pcl::fromROSMsg(*cloud_msg, *cloud);
 
@@ -44,7 +44,7 @@ bool Cube::StopRobot(const sensor_msgs::msg::PointCloud2::SharedPtr& cloud_msg) 
     for(const auto& point : cloud->points) {
         if(point.x < min_z) {
             counter++;
-            if(counter > 10) {
+            if(counter > 50) {
                 counter = 0;
                 return true;
             }

@@ -16,8 +16,8 @@ public:
     double leaf_size = 0.05;
     double min_z = 100;
 
-    void filterPointCloud(const sensor_msgs::msg::PointCloud2::SharedPtr& input, sensor_msgs::msg::PointCloud2& output);
-    bool StopRobot(const sensor_msgs::msg::PointCloud2::SharedPtr& cloud_msg);
+    void filterPointCloud(const sensor_msgs::msg::PointCloud2& input, sensor_msgs::msg::PointCloud2& output);
+    bool stopRobot(const sensor_msgs::msg::PointCloud2::SharedPtr& cloud_msg);
 };
 
 #endif // _CUBE_H_
