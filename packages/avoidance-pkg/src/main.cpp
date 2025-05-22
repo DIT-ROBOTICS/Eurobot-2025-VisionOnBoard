@@ -67,8 +67,6 @@ private:
         front_cube_.min_z     = back_cube_.min_z     = this->get_parameter("min_z").as_double();
     }
     void setup_comms() {
-        std::string pointcloud_topic = "/vision/onboard_" + camera_side_ + "/depth/color/points";
-
         // Subscribe and publish
         sub_frontcloud_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
             "/vision/onboard_front/depth/color/points", 10, std::bind(&PointCloudFilter::frontCloudCallback_, this, std::placeholders::_1));
@@ -83,11 +81,12 @@ private:
             "/vision/onboard_front/output", 10, std::bind(&PointCloudFilter::frontstopRobot_, this, std::placeholders::_1));
         sub_backstopRobot_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
             "/vision/onboard_back/output", 10, std::bind(&PointCloudFilter::backstopRobot_, this, std::placeholders::_1));
+        // pub_stopRobot_ = this->create_publisher<std_msgs::msg::Bool>("/stopRobot", rclcpp::QoS(1).reliable().transient_local());
         pub_stopRobot_ = this->create_publisher<std_msgs::msg::Bool>("/stopRobot", 10);
 
         // Topic below is just for test
         sub_cmd_vel_ = this->create_subscription<geometry_msgs::msg::Twist>(
-            "/vision/onboard/vel", 10, std::bind(&PointCloudFilter::Direct, this, std::placeholders::_1));
+            "/cmd_vel", 10, std::bind(&PointCloudFilter::Direct, this, std::placeholders::_1));
     }
 
     void processCloud(const sensor_msgs::msg::PointCloud2::SharedPtr cloud_msg,
@@ -119,24 +118,21 @@ private:
     }
 
     void frontCloudCallback_(const sensor_msgs::msg::PointCloud2::SharedPtr cloud_msg) {
+        CameraSide();
         if (camera_side_ != "front") return;
         processCloud(cloud_msg, front_cube_, pub_frontcloud_);
     }
     
     void backCloudCallback_(const sensor_msgs::msg::PointCloud2::SharedPtr cloud_msg) {
+        CameraSide();
+        if(camera_side_.empty()) {
+            std::cout << "Velocity is empty, setting to stop." << std::endl;
+            camera_side_ = "stop";
+        }
         if (camera_side_ != "back") return;
         processCloud(cloud_msg, back_cube_, pub_backcloud_);
     }
-    
 
-    void Direct(const geometry_msgs::msg::Twist::SharedPtr msg) {
-        if(msg->linear.x >= 0.0) {
-            camera_side_ = "front";
-        }
-        if(msg->linear.x < 0.0) {
-            camera_side_ = "back";
-        }
-    }
 
     void frontstopRobot_(const sensor_msgs::msg::PointCloud2::SharedPtr cloud_msg) {
         std_msgs::msg::Bool output;
@@ -159,8 +155,35 @@ private:
         pub_stopRobot_->publish(output);
     }
 
-    std::string camera_side_ = "front";
+    void Direct(const geometry_msgs::msg::Twist::SharedPtr msg) {
+        linear_x = msg->linear.x;
+    }
+
+    void CameraSide() {
+        std_msgs::msg::Bool output;
+        output.data = false;
+        std::cout << "linear_x: " << linear_x << std::endl;
+        if(linear_x > 0.0) {
+            camera_side_ = "front";
+        }
+        if(linear_x < 0.0) {
+            camera_side_ = "back";
+        }
+        if(linear_x == 0.0) {
+            camera_side_ = "stop";
+            pub_stopRobot_->publish(output);
+        }
+        if(camera_side_.empty()) {
+            std::cout << "Velocity is empty, setting to stop." << std::endl;
+            camera_side_ = "stop";
+            pub_stopRobot_->publish(output);
+        }
+        std::cout << "camera_side_: " << camera_side_ << std::endl;
+    }
+
     Cube front_cube_, back_cube_;
+    std::string camera_side_ = "stop";
+    double linear_x = 0.0;
     geometry_msgs::msg::Vector3 linear, angular;
     // TF2 buffer and listener
     std::shared_ptr<tf2_ros::Buffer> tf_buffer_;

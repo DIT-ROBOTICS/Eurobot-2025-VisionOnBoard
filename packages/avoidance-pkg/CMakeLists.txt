@@ -57,22 +57,15 @@ add_executable(test_vel
 ament_target_dependencies(test_vel ${dependencies})
 target_link_directories(test_vel PUBLIC ${PCL_LIBRARY_DIRS})
 
-# side node
-# add_executable(camera_side
-#   src/camera_side.cpp
-# )
-# ament_target_dependencies(camera_side ${dependencies})
-# target_link_directories(camera_side PUBLIC ${PCL_LIBRARY_DIRS})
-
 
 install(TARGETS
   main
   test_vel
-  # camera_side
   DESTINATION lib/${PROJECT_NAME}
 )
 
 install(DIRECTORY
+  config
   launch
   DESTINATION share/${PROJECT_NAME}
 )

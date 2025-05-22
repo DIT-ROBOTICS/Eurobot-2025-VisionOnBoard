@@ -15,7 +15,7 @@
     back_z_high: 0.5
 
     leaf_size: 0.01
-    min_z: 0.3
+    min_z: 0.35
     use_tf: true
 
 /vision/velocity_publisher:

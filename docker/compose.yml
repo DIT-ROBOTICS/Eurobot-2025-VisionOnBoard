@@ -48,10 +48,11 @@ services:
             - $LOCAL_WORKSPACE_FOLDER/packages/avoidance-pkg:/home/avoidance/vision-ws/src/avoidance-ros
         command: >
             bash -ic "
-            colcon build --packages-select avoidance_ros;
+            colcon build --symlink-install --packages-select avoidance_ros;
             source /home/avoidance/vision-ws/install/local_setup.bash;
-            ros2 launch avoidance_ros main.launch.py
+            ros2 launch avoidance_ros main.launch.py;
             "
+        # command: bash
         profiles: ['avoid']
 
     feedback:

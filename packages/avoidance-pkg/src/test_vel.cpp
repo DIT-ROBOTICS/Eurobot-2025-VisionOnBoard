@@ -52,12 +52,12 @@ int main(int argc, char** argv) {
     rclcpp::init(argc, argv);
     auto node = std::make_shared<VelPub>("velocity_publisher");
     
-    rclcpp::Rate rate(10);
-    while (rclcpp::ok()) {
+    // rclcpp::Rate rate(10);
+    // while (rclcpp::ok()) {
         node->publish_velocity();
-        rclcpp::spin_some(node);
-        rate.sleep();
-    }
+    //     rclcpp::spin_some(node);
+    //     rate.sleep();
+    // }
     
     rclcpp::shutdown();
     return 0;
