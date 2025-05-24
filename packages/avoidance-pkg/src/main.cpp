@@ -13,7 +13,7 @@ public:
     Cube cube_instance;
     double leaf_size = 0.05;
 
-    PointCloudFilter(const std::string& node_name, const rclcpp::NodeOptions& options = rclcpp::NodeOptions())
+    PointCloudFilter(const std::string& node_name)
         : Node(node_name) {
         // Initialize the tf2 buffer and listener
         tf_buffer_ = std::make_shared<tf2_ros::Buffer>(this->get_clock());
@@ -77,7 +77,7 @@ public:
     void stopRobot(const sensor_msgs::msg::PointCloud2::SharedPtr cloud_msg) {
         std_msgs::msg::Bool output;
         output.data = cube_instance.stopRobot(cloud_msg);
-        // pub_bool_->publish(output);
+        pub_bool_->publish(output);
     }
 
 private:
@@ -97,7 +97,7 @@ int main(int argc, char** argv) {
     std::string node_name = node->declare_parameter<std::string>("name", "onboard_filter");
     node.reset(); 
 
-    auto filter = std::make_shared<PointCloudFilter>(node_name, rclcpp::NodeOptions());
+    auto filter = std::make_shared<PointCloudFilter>(node_name);
 
     rclcpp::spin(filter);
     rclcpp::shutdown();

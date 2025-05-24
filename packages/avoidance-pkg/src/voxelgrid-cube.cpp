@@ -44,7 +44,7 @@ bool Cube::stopRobot(const sensor_msgs::msg::PointCloud2::SharedPtr& cloud_msg) 
     for(const auto& point : cloud->points) {
         if(point.z) {
             counter++;
-            if(counter > 10) {
+            if(counter > 50) {
                 counter = 0;
                 return true;
             }
