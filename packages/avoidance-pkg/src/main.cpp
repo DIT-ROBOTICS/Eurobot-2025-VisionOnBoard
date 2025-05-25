@@ -46,7 +46,10 @@ public:
 
         sub_bool_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
             "/vision/onboard/output", 10, std::bind(&PointCloudFilter::stopRobot, this, std::placeholders::_1));
-        pub_bool_ = this->create_publisher<std_msgs::msg::Bool>("/stopRobot", 10);
+        pub_bool_ = this->create_publisher<std_msgs::msg::Bool>("/stopRobot", rclcpp::QoS(1).reliable().transient_local());
+
+        sub_vel = this->create_subscription<geometry_msgs::msg::Twist>(
+            "/cmd_vel", 10, std::bind(&PointCloudFilter::Direct, this, std::placeholders::_1));
     }
 
     void cloudCallback(const sensor_msgs::msg::PointCloud2::SharedPtr cloud_msg) {
@@ -76,19 +79,36 @@ public:
 
     void stopRobot(const sensor_msgs::msg::PointCloud2::SharedPtr cloud_msg) {
         std_msgs::msg::Bool output;
-        output.data = cube_instance.stopRobot(cloud_msg);
+        if(vel_ > 0.0) {
+            camera_side_ = "front";
+            RCLCPP_INFO(this->get_logger(), "Camera side: front");
+            output.data = cube_instance.stopRobot(cloud_msg);
+            pub_bool_->publish(output);
+            return;
+        }
+        camera_side_ = "stop";
+        RCLCPP_INFO(this->get_logger(), "Camera side: stop");
+        output.data = false;
         pub_bool_->publish(output);
+    }
+
+    void Direct(const geometry_msgs::msg::Twist::SharedPtr msg) {
+        vel_ = msg->linear.x;
     }
 
 private:
     // TF2 buffer and listener
     std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
     std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
+    // Camera_side
+    std::string camera_side_ = "stop";
+    float vel_ = 0.0;
     // Subscribers and publishers
     rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr sub_pointcloud;
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pub_pointcloud_;
     rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr sub_bool_;
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr pub_bool_;
+    rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub_vel;
 };
 
 int main(int argc, char** argv) {
