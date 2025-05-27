@@ -20,14 +20,14 @@ public:
         tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
         // Declare parameters
-        this->declare_parameter<double>("x_low", -0.5);
-        this->declare_parameter<double>("x_high", 0.5);
-        this->declare_parameter<double>("y_low", -0.5);
-        this->declare_parameter<double>("y_high", 0.5);
-        this->declare_parameter<double>("z_low", 0);
-        this->declare_parameter<double>("z_high", 1);
-        this->declare_parameter<double>("leaf_size", 0.05);
-        this->declare_parameter<double>("min_z", 100);
+        this->declare_parameter<double>("x_low", 0.0);
+        this->declare_parameter<double>("x_high", 1.0);
+        this->declare_parameter<double>("y_low", 0.0);
+        this->declare_parameter<double>("y_high", 1.0);
+        this->declare_parameter<double>("z_low", 0.0);
+        this->declare_parameter<double>("z_high", 1.0);
+        this->declare_parameter<double>("leaf_size", 0.01);
+        this->declare_parameter<double>("min_depth", 100.0);
         this->declare_parameter<double>("check_angular", 3.0);
 
         // Get parameters
@@ -38,7 +38,7 @@ public:
         cube_instance.z_low     = this->get_parameter("z_low").as_double();
         cube_instance.z_high    = this->get_parameter("z_high").as_double();
         cube_instance.leaf_size = this->get_parameter("leaf_size").as_double();
-        cube_instance.min_z     = this->get_parameter("min_z").as_double();
+        cube_instance.min_z     = this->get_parameter("min_depth").as_double();
         check_angular           = this->get_parameter("check_angular").as_double();
         
         // Subscribe and publish

@@ -5,7 +5,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     pkg_share = get_package_share_directory('avoidance_ros')
-    config_file = os.path.join(pkg_share, 'config', 'avoidance_config.yml')
+    config_file = os.path.join(pkg_share, 'config', 'avoidance_config.yaml')
 
     return LaunchDescription([
         Node(
