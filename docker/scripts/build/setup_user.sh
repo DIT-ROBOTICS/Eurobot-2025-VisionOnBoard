@@ -11,6 +11,7 @@ adduser --uid "$USER_UID" --gid "$USER_GID" --disabled-password --gecos "" "$USE
 mkdir -p /etc/sudoers.d
 echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/$USERNAME"
 chmod 0440 "/etc/sudoers.d/$USERNAME"
+usermod -aG video "$USERNAME"
 
 mkdir -p "/home/$USERNAME"
 chown "$USERNAME:$USERNAME" "/home/$USERNAME"

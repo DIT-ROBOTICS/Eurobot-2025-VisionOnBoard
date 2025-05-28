@@ -1,10 +1,11 @@
 x-common-vars: &common-vars
-  tty: true
-  stdin_open: true
-  ipc: host
-  network_mode: host
-  stop_grace_period: 1s
-  environment:
+    tty: true
+    stdin_open: true
+    ipc: host
+    network_mode: host
+    stop_grace_period: 1s
+
+x-common-envs: &common-envs
     RMW_IMPLEMENTATION: $RMW_IMPLEMENTATION
     ROS_DOMAIN_ID: $ROS_DOMAIN_ID
 services:
@@ -17,22 +18,20 @@ services:
                 LIBREALSENSE_VERSION: $LIBREALSENSE_VERSION
                 REALSENSE_ROS_VERSION: $REALSENSE_ROS_VERSION
         <<: *common-vars
-        image: vision-main:onboard-realsense
+        image: vision-main/onboard-realsense:latest
         container_name: onboard-realsense
         privileged: true
+        environment:
+            <<: *common-envs
+            SERIAL_NO: _419122270813
         volumes:
             - /dev:/dev
-            - $LOCAL_WORKSPACE_FOLDER/config/dds-uri/cycloneDDS.xml:/tmp/cycloneDDS.xml
-            - $LOCAL_WORKSPACE_FOLDER/packages/realsense-pkg:/home/onboard/vision-ws/src/realsense-ros
+            - $LOCAL_WORKSPACE_FOLDER/run/realsense/config:/home/onboard/vision-ws/src/realsense-ros/realsense2_camera/launch/config
+            - $LOCAL_WORKSPACE_FOLDER/run/realsense/visual_presets:/home/onboard/vision-ws/src/realsense-ros/realsense2_camera/launch/visual_presets
         device_cgroup_rules:
             - "c 81:* rmw"
             - "c 189:* rmw"
-        command: >
-            bash -ic "
-            colcon build --packages-select realsense2_camera;
-            source /home/realsense/vision-ws/install/local_setup.bash;
-            ros2 launch realsense2_camera rs_launch.py
-            "
+        command: ["/ros_entrypoint.sh", "ros2", "launch", "realsense2_camera", "rs_launch.py"]
         profiles: ['camera']
 
     avoidance:

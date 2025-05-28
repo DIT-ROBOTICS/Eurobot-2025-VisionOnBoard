@@ -23,10 +23,10 @@ from launch import LaunchContext
 
 configurable_parameters = [{'name': 'camera_name',                  'default': 'onboard', 'description': 'camera unique name'},
                            {'name': 'camera_namespace',             'default': 'vision', 'description': 'namespace for camera'},
-                           {'name': 'serial_no',                    'default': "_419122270813", 'description': 'choose device by serial number'},
+                           {'name': 'serial_no',                    'default': os.environ.get('SERIAL_NO', ''), 'description': 'choose device by serial number'},
                            {'name': 'usb_port_id',                  'default': "''", 'description': 'choose device by usb port id'},
                            {'name': 'device_type',                  'default': "''", 'description': 'choose device by type'},
-                           {'name': 'config_file',                  'default': "''", 'description': 'yaml config file'},
+                           {'name': 'config_file',                  'default': "/home/onboard/vision-ws/src/realsense-ros/realsense2_camera/launch/config/config.yaml", 'description': 'yaml config file'},
                            {'name': 'json_file_path',               'default': "", 'description': 'allows advanced configuration'},
                            {'name': 'initial_reset',                'default': 'true', 'description': "''"},
                            {'name': 'accelerate_gpu_with_glsl',     'default': "false", 'description': 'enable GPU acceleration with GLSL'},
@@ -35,12 +35,12 @@ configurable_parameters = [{'name': 'camera_name',                  'default': '
                            {'name': 'output',                       'default': 'log', 'description': 'pipe node output [screen|log]'},
                            # Color
                            {'name': 'enable_color',                 'default': 'true', 'description': 'enable color stream'},
-                           {'name': 'rgb_camera.color_profile',     'default': '640,340,30', 'description': 'color stream profile'},
+                           {'name': 'rgb_camera.color_profile',     'default': '640,360,90', 'description': 'color stream profile'},
                            {'name': 'rgb_camera.color_format',      'default': 'BGR8', 'description': 'color stream format'},
                            {'name': 'rgb_camera.enable_auto_exposure', 'default': 'true', 'description': 'enable/disable auto exposure for color image'},
                            # Depth
                            {'name': 'enable_depth',                 'default': 'true', 'description': 'enable depth stream'},
-                           {'name': 'depth_module.depth_profile',   'default': '848,480,90', 'description': 'depth stream profile'},
+                           {'name': 'depth_module.depth_profile',   'default': '640,360,90', 'description': 'depth stream profile'},
                            {'name': 'depth_module.depth_format',    'default': 'Z16', 'description': 'depth stream format'},
                            {'name': 'depth_module.exposure',        'default': '8500', 'description': 'Depth module manual exposure value'},
                            {'name': 'depth_module.gain',            'default': '16', 'description': 'Depth module manual gain value'},
@@ -127,17 +127,25 @@ def launch_setup(context, params, param_name_suffix=''):
     ]
 
 def launch_base_footprint_transform_publisher_node(context: LaunchContext):
-    node = launch_ros.actions.Node(
+    config_file = LaunchConfiguration('config_file').perform(context)
+    if config_file == "''":
+        translation = ['0.0', '0.0', '0.0']
+        rotation = ['0.0', '0.0', '0.0']
+    else:
+        params_from_file = yaml_to_dict(config_file)
+        static_tf = params_from_file.get('static_tf', {})
+        translation = list(map(str, static_tf.get('translation', [0.0905, 0.0, 0.303])))
+        rotation = list(map(str, static_tf.get('rotation', [0, 0.3496, -1.5707963268])))
+
+    return [launch_ros.actions.Node(
         name='cam2base_transform_publisher',
         package="tf2_ros",
         executable="static_transform_publisher",
-        arguments=[
-            '0.0905', '0.0', '0.303', '0', '0.3496', '-1.5707963268',
+        arguments=translation + rotation + [
             'base_footprint',
             context.launch_configurations['camera_name'] + '_link'
         ]
-    )
-    return [node]
+    )]
 
 def generate_launch_description():
     return LaunchDescription(declare_configurable_parameters(configurable_parameters) + [
