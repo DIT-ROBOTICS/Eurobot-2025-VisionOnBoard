@@ -1,0 +1,12 @@
+/vision/onboard_filter:
+  ros__parameters:
+    x_low: 0.16
+    x_high: 0.5
+    y_low: -0.5
+    y_high: 0.5
+    z_low: 0.015
+    z_high: 0.5
+    leaf_size: 0.01
+    min_z: 0.3
+    check_angular: 3.0
+    use_tf: true

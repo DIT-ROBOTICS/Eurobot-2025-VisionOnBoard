@@ -23,7 +23,7 @@ from launch import LaunchContext
 
 configurable_parameters = [{'name': 'camera_name',                  'default': 'onboard', 'description': 'camera unique name'},
                            {'name': 'camera_namespace',             'default': 'vision', 'description': 'namespace for camera'},
-                           {'name': 'serial_no',                    'default': "_419122270673", 'description': 'choose device by serial number'},
+                           {'name': 'serial_no',                    'default': "_218622278300", 'description': 'choose device by serial number'},
                            {'name': 'usb_port_id',                  'default': "''", 'description': 'choose device by usb port id'},
                            {'name': 'device_type',                  'default': "''", 'description': 'choose device by type'},
                            {'name': 'config_file',                  'default': "''", 'description': 'yaml config file'},
@@ -132,7 +132,8 @@ def launch_base_footprint_transform_publisher_node(context: LaunchContext):
         package="tf2_ros",
         executable="static_transform_publisher",
         arguments=[
-            '0.0905', '0.0', '0.303', '0', '0.3496', '-1.5707963268',
+            '0.065', '0.085', '0.305',
+            '-0.1745', '0.5236', '-1.6581',
             'base_footprint',
             context.launch_configurations['camera_name'] + '_link'
         ]

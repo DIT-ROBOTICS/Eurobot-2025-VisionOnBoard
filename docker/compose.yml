@@ -17,6 +17,7 @@ services:
                 LIBREALSENSE_VERSION: $LIBREALSENSE_VERSION
                 REALSENSE_ROS_VERSION: $REALSENSE_ROS_VERSION
         <<: *common-vars
+        cpuset: "6-9"
         image: vision-main:onboard-realsense
         container_name: onboard-realsense
         privileged: true
@@ -31,7 +32,7 @@ services:
             bash -ic "
             colcon build --packages-select realsense2_camera;
             source /home/realsense/vision-ws/install/local_setup.bash;
-            ros2 launch realsense2_camera rs_multi_camera_launch.py
+            ros2 launch realsense2_camera rs_launch.py
             "
         profiles: ['camera']
 
@@ -42,17 +43,18 @@ services:
             args:
                 USER: avoidance
         <<: *common-vars
+        cpuset: "10-15"
         image: vision-main:avoidance
         container_name: avoidance
         volumes:
             - $LOCAL_WORKSPACE_FOLDER/packages/avoidance-pkg:/home/avoidance/vision-ws/src/avoidance-ros
-        command: >
-            bash -ic "
-            colcon build --symlink-install --packages-select avoidance_ros;
-            source /home/avoidance/vision-ws/install/local_setup.bash;
-            ros2 launch avoidance_ros main.launch.py;
-            "
-        # command: bash
+        # command: >
+        #     bash -ic "
+        #     colcon build --symlink-install --packages-select avoidance_ros;
+        #     source /home/avoidance/vision-ws/install/local_setup.bash;
+        #     ros2 launch avoidance_ros main.launch.py;
+        #     "
+        command: bash
         profiles: ['avoid']
 
     feedback:

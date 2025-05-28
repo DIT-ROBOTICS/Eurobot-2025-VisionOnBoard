@@ -50,6 +50,14 @@ add_executable(main
 ament_target_dependencies(main ${dependencies})
 target_link_directories(main PUBLIC ${PCL_LIBRARY_DIRS})
 
+# onecam_node
+add_executable(onecam
+  src/onecam.cpp
+  src/voxelgrid-cube.cpp
+)
+ament_target_dependencies(onecam ${dependencies})
+target_link_directories(onecam PUBLIC ${PCL_LIBRARY_DIRS})
+
 # test node
 add_executable(test_vel
   src/test_vel.cpp
@@ -60,6 +68,7 @@ target_link_directories(test_vel PUBLIC ${PCL_LIBRARY_DIRS})
 
 install(TARGETS
   main
+  onecam
   test_vel
   DESTINATION lib/${PROJECT_NAME}
 )
